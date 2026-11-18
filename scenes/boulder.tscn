@@ -1,0 +1,19 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/boulder.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/tiles/puzzle.png" id="2_atlas"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_shape"]
+size = Vector2(28, 28)
+
+[node name="Boulder" type="CharacterBody2D" groups=["boulder"]]
+motion_mode = 1
+script = ExtResource("1_script")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_atlas")
+hframes = 8
+frame = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_shape")

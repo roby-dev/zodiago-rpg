@@ -1,0 +1,80 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/game_menu.gd" id="1_menu"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_window"]
+content_margin_left = 32.0
+content_margin_top = 24.0
+content_margin_right = 32.0
+content_margin_bottom = 24.0
+bg_color = Color(0.06, 0.07, 0.16, 0.97)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.95, 0.8, 0.35, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="GameMenu" type="CanvasLayer"]
+process_mode = 3
+layer = 15
+script = ExtResource("1_menu")
+
+[node name="Dim" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.45)
+
+[node name="Window" type="PanelContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -440.0
+offset_top = -270.0
+offset_right = 440.0
+offset_bottom = 270.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_window")
+
+[node name="HBox" type="HBoxContainer" parent="Window"]
+layout_mode = 2
+theme_override_constants/separation = 28
+
+[node name="Tabs" type="VBoxContainer" parent="Window/HBox"]
+custom_minimum_size = Vector2(190, 0)
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Separator" type="VSeparator" parent="Window/HBox"]
+layout_mode = 2
+
+[node name="Content" type="VBoxContainer" parent="Window/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Window/HBox/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.8, 0.35, 1)
+theme_override_font_sizes/font_size = 32
+
+[node name="List" type="VBoxContainer" parent="Window/HBox/Content"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="Footer" type="Label" parent="Window/HBox/Content"]
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.94, 1, 1)
+theme_override_font_sizes/font_size = 22
+autowrap_mode = 3

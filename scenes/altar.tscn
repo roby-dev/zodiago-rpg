@@ -1,0 +1,22 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/altar.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/tiles/puzzle.png" id="2_atlas"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_shape"]
+size = Vector2(28, 28)
+
+[node name="Altar" type="StaticBody2D" groups=["talker"]]
+script = ExtResource("1_script")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_atlas")
+hframes = 8
+frame = 7
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_shape")
+
+[node name="Item" type="Sprite2D" parent="."]
+position = Vector2(0, -22)
+scale = Vector2(0.75, 0.75)
