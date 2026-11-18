@@ -1,17 +1,18 @@
 class_name GameMenu
 extends CanvasLayer
 ## Pause menu, opened with "cancel" while exploring.
-## Tabs: Equipment (armor pieces) and Bag (items). While open it pauses the
+## Tabs: Equipment (armor pieces), Bag (items) and Status (level, stats). While open it pauses the
 ## scene tree; this node keeps running because its process_mode is ALWAYS.
 ## Up/down move, action enters/confirms, cancel goes back or closes.
 
-enum Tab { EQUIPMENT, BAG, CLOSE }
+enum Tab { EQUIPMENT, BAG, STATUS, CLOSE }
 
-const TAB_NAMES: Array[String] = ["Equipo", "Bolsa", "Cerrar"]
+const TAB_NAMES: Array[String] = ["Equipo", "Bolsa", "Estado", "Cerrar"]
 const GOLD := Color(0.95, 0.8, 0.35)
 const TEXT := Color(0.92, 0.94, 1)
 const DIM := Color(0.55, 0.58, 0.7)
 const ICON_SIZE := Vector2(48, 48)
+const STAR: Texture2D = preload("res://assets/ui/star.png")
 
 var _tab := Tab.EQUIPMENT
 ## True while the cursor is inside the bag list instead of the tabs.
@@ -26,8 +27,6 @@ var _item_index := 0
 
 func _ready() -> void:
 	hide()
-	for tab_name in TAB_NAMES:
-		_tabs.add_child(_label(tab_name, 30, TEXT))
 
 
 func open() -> void:
@@ -92,19 +91,18 @@ func _back() -> void:
 
 
 func _refresh() -> void:
-	for i in _tabs.get_child_count():
-		var label := _tabs.get_child(i) as Label
+	_clear(_tabs)
+	for i in TAB_NAMES.size():
 		var selected := i == _tab
-		label.text = ("▶ " if selected and not _in_list else "   ") + TAB_NAMES[i]
-		label.modulate = GOLD if selected else TEXT
-	for child in _list.get_children():
-		_list.remove_child(child)
-		child.queue_free()
+		_tabs.add_child(_row([_cursor(selected and not _in_list), _label(TAB_NAMES[i], 30, GOLD if selected else TEXT)]))
+	_clear(_list)
 	match _tab:
 		Tab.EQUIPMENT:
 			_show_equipment()
 		Tab.BAG:
 			_show_bag()
+		Tab.STATUS:
+			_show_status()
 		Tab.CLOSE:
 			_title.text = "Cerrar"
 			_footer.text = "Volver a la aventura."
@@ -142,10 +140,45 @@ func _show_bag() -> void:
 	for i in ids.size():
 		var selected := _in_list and i == _item_index
 		var color := GOLD if selected else TEXT
-		var item_name := _label(("▶ " if selected else "   ") + String(GameState.ITEMS[ids[i]]["name"]), 26, color)
+		var item_name := _label(String(GameState.ITEMS[ids[i]]["name"]), 26, color)
 		item_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		_list.add_child(_row([item_name, _label("x%d" % GameState.item_count(ids[i]), 26, color)]))
+		_list.add_child(_row([_cursor(selected), item_name, _label("x%d" % GameState.item_count(ids[i]), 26, color)]))
 	_footer.text = GameState.ITEMS[ids[_item_index]]["description"]
+
+
+func _show_status() -> void:
+	_title.text = "Estado"
+	var hero := GameState.hero_combatant()
+	var rows: Array[String] = [
+		"%s   Nivel %d   Exp %d/%d" % [hero.display_name, GameState.level, GameState.experience, GameState.exp_to_next()],
+		"PS %d/%d   Cosmos %d/%d" % [hero.hp, hero.max_hp, hero.cosmos, hero.max_cosmos],
+		"Ataque %d   Defensa %d   Velocidad %d" % [hero.attack, hero.defense, hero.speed],
+		"Técnicas:",
+	]
+	for id in GameState.known_techniques():
+		rows.append("    %s  (%d de cosmos)" % [Techniques.ALL[id]["name"], Techniques.ALL[id]["cost"]])
+	for i in rows.size():
+		_list.add_child(_label(rows[i], 24, GOLD if i == 3 else TEXT))
+	_footer.text = "Cada pieza de armadura suma %d de defensa y %d de cosmos." % [GameState.ARMOR_DEFENSE, GameState.ARMOR_COSMOS]
+	if GameState.is_set_complete():
+		_footer.text += "
+Set completo: recuperas %d de cosmos por turno." % GameState.SET_COSMOS_REGEN
+
+
+func _clear(container: Container) -> void:
+	for child in container.get_children():
+		container.remove_child(child)
+		child.queue_free()
+
+
+## Gold star marking the selected row (transparent when not selected,
+## so rows never shift sideways).
+func _cursor(shown: bool) -> TextureRect:
+	var cursor := TextureRect.new()
+	cursor.texture = STAR
+	cursor.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
+	cursor.modulate.a = 1.0 if shown else 0.0
+	return cursor
 
 
 func _row(children: Array[Control]) -> HBoxContainer:

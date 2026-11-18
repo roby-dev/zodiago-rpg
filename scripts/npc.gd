@@ -9,6 +9,10 @@ signal talk_requested(speaker: String, lines: PackedStringArray)
 @export_multiline var lines: PackedStringArray = []
 ## 3x4 spritesheet of 32x48 frames (see CharacterSprite).
 @export var sheet: Texture2D
+## If true, talking to this NPC fully restores the hero's HP and cosmos.
+@export var heals_hero := false
+
+const HEAL_LINE := "(Tus heridas sanaron y tu cosmos se renovó.)"
 
 @onready var _sprite: CharacterSprite = $Sprite
 
@@ -22,7 +26,11 @@ func _ready() -> void:
 ## Called by the player when pressing "action" while facing this NPC.
 func interact(by: Node2D) -> void:
 	_sprite.facing = _direction_to(by.global_position)
-	talk_requested.emit(display_name, lines)
+	var said := lines.duplicate()
+	if heals_hero:
+		GameState.restore_hero()
+		said.append(HEAL_LINE)
+	talk_requested.emit(display_name, said)
 
 
 func _direction_to(target: Vector2) -> Vector2i:

@@ -18,6 +18,7 @@ func _initialize() -> void:
 	_test_bag_starts_with_items()
 	_test_bag_add_and_remove()
 	_test_owned_pieces()
+	preload("res://tests/battle_tests.gd").new().run(_check)
 	print("%d checks, %d failures" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -75,6 +76,7 @@ func _test_piece_icons() -> void:
 		var icon: AtlasTexture = state.piece_icon(piece)
 		_check(icon != null and icon.region == Rect2(piece * 32, 0, 32, 32), "icon region for piece %d" % piece)
 		_check(not String(GameStateScript.PIECE_NAMES[piece]).is_empty(), "piece %d has a name" % piece)
+		_check(not String(GameStateScript.PIECE_LORE[piece]).is_empty(), "piece %d has its constellation lore" % piece)
 	state.free()
 
 
@@ -89,9 +91,10 @@ func _test_area_tileset_collisions() -> void:
 
 func _test_bag_starts_with_items() -> void:
 	var state := _new_state()
-	_check(state.item_count("fig_bread") == 2, "bag starts with 2 fig breads")
-	_check(state.bag_items() == ["fig_bread"], "bag lists the starting items, got %s" % [state.bag_items()])
-	_check(not String(GameStateScript.ITEMS["fig_bread"]["name"]).is_empty(), "items have a name")
+	_check(state.item_count("ambrosia") == 2, "bag starts with 2 ambrosias")
+	_check(state.item_count("nectar") == 3, "bag starts with 3 nectars")
+	_check(state.bag_items() == ["ambrosia", "nectar"], "bag lists the starting items, got %s" % [state.bag_items()])
+	_check(GameStateScript.ITEMS["ambrosia"]["name"] == "Ambrosía menor", "starting item is the lesser ambrosia")
 	state.free()
 
 
@@ -99,14 +102,14 @@ func _test_bag_add_and_remove() -> void:
 	var state := _new_state()
 	var changes := [0]
 	state.inventory_changed.connect(func() -> void: changes[0] += 1)
-	state.add_item("fig_bread", 3)
-	_check(state.item_count("fig_bread") == 5, "add_item stacks counts")
-	_check(state.remove_item("fig_bread", 4), "remove_item succeeds with enough items")
-	_check(state.item_count("fig_bread") == 1, "remove_item subtracts")
-	_check(not state.remove_item("fig_bread", 2), "cannot remove more than owned")
-	_check(state.item_count("fig_bread") == 1, "failed remove keeps the count")
-	_check(state.remove_item("fig_bread"), "remove the last one")
-	_check(state.bag_items().is_empty(), "items at 0 leave the bag")
+	state.add_item("ambrosia", 3)
+	_check(state.item_count("ambrosia") == 5, "add_item stacks counts")
+	_check(state.remove_item("ambrosia", 4), "remove_item succeeds with enough items")
+	_check(state.item_count("ambrosia") == 1, "remove_item subtracts")
+	_check(not state.remove_item("ambrosia", 2), "cannot remove more than owned")
+	_check(state.item_count("ambrosia") == 1, "failed remove keeps the count")
+	_check(state.remove_item("ambrosia"), "remove the last one")
+	_check(state.bag_items() == ["nectar"], "items at 0 leave the bag")
 	_check(changes[0] == 3, "inventory_changed on each successful change, got %d" % changes[0])
 	state.free()
 

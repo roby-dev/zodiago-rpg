@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" path="res://scenes/gate.tscn" id="8_gate"]
 [ext_resource type="PackedScene" path="res://scenes/altar.tscn" id="9_altar"]
 [ext_resource type="PackedScene" path="res://scenes/game_menu.tscn" id="10_menu"]
+[ext_resource type="PackedScene" path="res://scenes/battle_screen.tscn" id="11_battle"]
 
 [node name="World" type="Node2D"]
 y_sort_enabled = true
@@ -21,9 +22,10 @@ script = ExtResource("1_world")
 
 [node name="ElderMelina" parent="." instance=ExtResource("3_npc")]
 position = Vector2(304, 272)
-display_name = "Anciana Melina"
+display_name = "Melina, el oráculo"
+heals_hero = true
 sheet = ExtResource("5_elder")
-lines = PackedStringArray("¡Bienvenido a Astelia, joven aspirante!", "Un verdadero guerrero no nace con armadura: la gana pieza por pieza.", "Al noreste, tras la reja de piedra, descansa la primera pieza.", "Dicen que la reja solo se abre cuando algo pesado descansa sobre la placa... quizás esa roca del camino.")
+lines = PackedStringArray("Bienvenido a Astelia, joven aspirante. Soy Melina, el oráculo de este pueblo.", "Las estrellas me hablaron de ti: llegas sin armadura, pero no sin destino.", "Cinco reliquias de las constelaciones forman la armadura de un guardián. Ninguna se regala: cada una se gana.", "La primera, los Brazaletes de Hércules, descansa al noreste, tras la reja de piedra.", "La reja cede cuando algo pesado reposa sobre su placa. Hércules no habría dudado en mover esa roca.")
 
 [node name="Plate" parent="." instance=ExtResource("7_plate")]
 position = Vector2(752, 336)
@@ -42,5 +44,7 @@ position = Vector2(688, 144)
 position = Vector2(208, 272)
 
 [node name="DialogueBox" parent="." instance=ExtResource("4_dialogue")]
+
+[node name="BattleScreen" parent="." instance=ExtResource("11_battle")]
 
 [node name="GameMenu" parent="." instance=ExtResource("10_menu")]

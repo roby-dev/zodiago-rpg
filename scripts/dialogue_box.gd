@@ -13,7 +13,7 @@ var _time := 0.0
 
 @onready var _speaker: Label = $Panel/HBox/VBox/Speaker
 @onready var _text: Label = $Panel/HBox/VBox/Text
-@onready var _arrow: Label = $Panel/HBox/VBox/NextArrow
+@onready var _arrow: TextureRect = $Panel/HBox/VBox/NextArrow
 @onready var _icon: TextureRect = $Panel/HBox/Icon
 
 

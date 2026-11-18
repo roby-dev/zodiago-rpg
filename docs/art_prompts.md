@@ -120,6 +120,73 @@ True pixel art, hard edges, no anti-aliasing, 1 px dark outline on objects.
 Greek myth + zodiac style. If you cannot output at native size, keep the exact 8:1 ratio.
 ```
 
+## Battle enemies (48x48)
+
+Replace the placeholders in `assets/enemies/` (made by `tools/make_enemy_placeholders.py`).
+Save as `art_source/enemies/enemies_source.png`.
+
+```text
+Create pixel-art BATTLE SPRITES of 3 monsters for a turn-based RPG (16-bit / GBA era),
+shown from the front, facing the player, like classic first-person RPG battles.
+
+=== STRICT TECHNICAL FORMAT (most important) ===
+- Layout: ONE row of 3 sprites, each exactly 48 x 48 px (144 x 48 px total), in this order:
+  1. SAND SCORPION - a giant desert scorpion, ochre and rust colors, raised claws,
+                     curled tail with a golden stinger.
+  2. WILD SATYR    - a wild creature of Greek myth: goat legs, human torso, curved horns,
+                     holding a wooden club, angry expression.
+  3. HARPY         - a harpy of Greek myth: woman's face and torso, large violet feathered
+                     wings, golden talons.
+- Each monster centered, standing on the bottom edge of its cell, filling most of it.
+- Fully TRANSPARENT background. No shadows, no ground, no text, no gaps.
+- True pixel art: hard pixel edges, NO anti-aliasing, NO blur, NO gradients.
+- 1 px dark navy outline. Max ~24 colors per sprite. Light from the top-left.
+- If you cannot output at native size, keep the exact 3:1 ratio and square cells.
+
+=== ART STYLE ===
+Greek myth and zodiac fantasy, 90s anime-inspired, threatening but readable.
+ORIGINAL designs: no references to existing games, anime or manga.
+```
+
+## Greek props (32x32 tiles)
+
+Decoration that gives the village its Greek identity. Save as
+`art_source/tiles/greek_props_source.png`. Attach `art_source/tiles/desert_source.png`
+as the style reference.
+
+```text
+Create pixel-art DECORATION OBJECTS for a top-down 2D RPG (16-bit / GBA era style),
+for a small village of ANCIENT GREECE in an arid Aegean land. Match the style and
+palette of the attached desert tileset.
+
+=== STRICT TECHNICAL FORMAT (most important) ===
+- Layout: ONE row of 8 tiles, each exactly 32 x 32 px (256 x 32 px total), in this order:
+  1. COLUMN        - one intact white marble Doric column with fluting, seen from a
+                     slight top-down view, base at the bottom of the tile.
+  2. RUINED_COLUMN - the same column broken in half, with a few fallen stone chunks.
+  3. AMPHORA       - a terracotta amphora with black-figure decoration (simple
+                     geometric bands and a meander stripe), standing.
+  4. BRAZIER       - a bronze tripod brazier with a bright burning fire.
+  5. STATUE        - a small marble statue of a warrior holding a spear and a round
+                     shield, on a square plinth. Generic and ORIGINAL (no known character).
+  6. MARBLE_FLOOR  - white marble floor slabs with thin grey seams, seamless on all
+                     4 sides, NO border (opaque tile).
+  7. STAIRS        - wide white marble steps going up (toward the top of the tile),
+                     seamless left/right (opaque tile).
+  8. BLUE_DOOR     - the village whitewashed wall (same as the attached WALL tile) with
+                     an Aegean-blue wooden door and a small blue window shutter
+                     (opaque tile, matches WALL at its left/right edges).
+- Tiles 1-5 on a TRANSPARENT background (drawn over the ground); tiles 6-8 opaque.
+- True pixel art: hard pixel edges, NO anti-aliasing, NO blur, NO gradients.
+- 1 px dark outline on objects (1-5). Light from the top-left, strong midday sun.
+- Max ~32 colors: marble whites and greys, terracotta, bronze, Aegean blue, gold accents.
+- No grid lines, labels or gaps. If you cannot output at native size, keep the exact
+  8:1 ratio and make every tile a perfect square.
+
+=== ART STYLE ===
+Ancient Greece, myth and zodiac. ORIGINAL art, no references to existing games or anime.
+```
+
 ## Desert starting village tileset (32x32 tiles)
 
 Same 8 slots and order as the town tileset, so the same code can load it.

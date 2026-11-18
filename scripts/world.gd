@@ -3,6 +3,7 @@ extends Node2D
 ## ASCII layout and wires scene-to-scene communication (anything in the
 ## "talker" group -> dialogue box), so those scenes never know about each other.
 ## Puzzle objects (boulder, plate, gate, altar) are scene instances in world.tscn.
+## Random battles start while walking on sand; roads are safe.
 
 const T := AreaTileset.Tile
 const ATLAS: Texture2D = preload("res://assets/tiles/desert.png")
@@ -36,11 +37,18 @@ const MAP: Array[String] = [
 const GROUND := {",": T.PATH, "*": T.DECOR, "~": T.WATER}
 ## Objects layer: things drawn on top of the ground.
 const OBJECTS := {"T": T.TREE, "R": T.ROOF, "H": T.WALL, "D": T.DOOR}
+## Where the hero wakes up after losing a battle (next to Melina).
+const RESPAWN := Vector2(272, 272)
+const MIN_STEPS := 10
+const MAX_STEPS := 22
+
+var _encounters := EncounterCounter.new(MIN_STEPS, MAX_STEPS)
 
 @onready var _ground: TileMapLayer = $Ground
 @onready var _objects: TileMapLayer = $Objects
 @onready var _player: Player = $Player
 @onready var _dialogue: DialogueBox = $DialogueBox
+@onready var _battle: BattleScreen = $BattleScreen
 
 
 func _ready() -> void:
@@ -51,6 +59,24 @@ func _ready() -> void:
 	_player.set_camera_limits(get_map_rect())
 	for talker in get_tree().get_nodes_in_group("talker"):
 		talker.talk_requested.connect(_dialogue.open)
+	_player.stepped.connect(_on_player_stepped)
+	_battle.finished.connect(_on_battle_finished)
+
+
+func _on_player_stepped(cell: Vector2i) -> void:
+	var is_road := _ground.get_cell_atlas_coords(cell) == AreaTileset.coords(T.PATH)
+	if _encounters.step(is_road):
+		_battle.start(EnemyCatalog.random_group(EnemyCatalog.DESERT, RandomNumberGenerator.new()))
+
+
+func _on_battle_finished(outcome: Battle.Outcome) -> void:
+	if outcome == Battle.Outcome.DEFEAT:
+		GameState.restore_hero()
+		_player.position = RESPAWN
+		_dialogue.open("Melina, el oráculo", PackedStringArray([
+			"Te encontré tendido en la arena. Tu cosmos todavía es débil, aspirante.",
+			"Descansa. Cuando estés listo, las estrellas seguirán esperándote.",
+		]))
 
 
 func _paint_map() -> void:

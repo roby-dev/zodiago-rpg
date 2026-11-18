@@ -5,6 +5,9 @@ extends CharacterBody2D
 ## ends up between tiles. Pressing "action" interacts with whatever is in
 ## front (any body that has an `interact(by)` method).
 
+## Emitted when a step finishes, with the grid cell the player stands on.
+signal stepped(cell: Vector2i)
+
 const TILE := Grid.TILE
 
 ## One spritesheet per armor stage (index = GameState.armor_stage).
@@ -61,7 +64,7 @@ func _physics_process(_delta: float) -> void:
 	var tween := create_tween()
 	tween.tween_property(self, "position", position + motion, step_time)
 	tween.parallel().tween_callback(func() -> void: _sprite.step_frame = 0).set_delay(step_time * 0.5)
-	tween.finished.connect(func() -> void: _moving = false)
+	tween.finished.connect(_on_step_finished)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -71,6 +74,11 @@ func _unhandled_input(event: InputEvent) -> void:
 	if target:
 		get_viewport().set_input_as_handled()
 		target.call("interact", self)
+
+
+func _on_step_finished() -> void:
+	_moving = false
+	stepped.emit(Vector2i(position / TILE))
 
 
 func _apply_armor(stage: int) -> void:

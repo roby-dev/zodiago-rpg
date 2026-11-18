@@ -5,6 +5,8 @@ extends StaticBody2D
 
 signal talk_requested(speaker: String, lines: PackedStringArray, icon: Texture2D)
 
+const SPEAKER := "Altar de las estrellas"
+
 ## Index in GameState.Piece.
 @export_enum("Bracers", "Boots", "Chest", "Shoulders", "Tiara") var piece := 0
 
@@ -23,14 +25,17 @@ func _ready() -> void:
 func interact(_by: Node) -> void:
 	var icon := GameState.piece_icon(piece)
 	if _taken:
-		talk_requested.emit("Altar", PackedStringArray(["El altar está vacío."]), null)
+		talk_requested.emit(SPEAKER, PackedStringArray(["El altar está vacío. Solo queda el eco de las estrellas."]), null)
 		return
 	if not GameState.obtain(piece):
-		talk_requested.emit("Altar", PackedStringArray(["Una fuerza antigua protege esta pieza. Aún no es tu momento."]), icon)
+		talk_requested.emit(SPEAKER, PackedStringArray(["Una fuerza antigua protege esta reliquia. Aún no es tu momento."]), icon)
 		return
 	_taken = true
 	_item.hide()
-	var lines := PackedStringArray(["¡Obtuviste: %s!" % GameState.PIECE_NAMES[piece]])
+	var lines := PackedStringArray([
+		"¡Obtuviste: %s!" % GameState.PIECE_NAMES[piece],
+		GameState.PIECE_LORE[piece],
+	])
 	if GameState.is_set_complete():
 		lines.append("¡Tu armadura está completa! Tu cosmos arde como nunca.")
-	talk_requested.emit("Altar", lines, icon)
+	talk_requested.emit(SPEAKER, lines, icon)
